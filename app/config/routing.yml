@@ -1,9 +1,7 @@
-
 core_bet:
     resource: "@CoreBetBundle/Controller/"
     type:     annotation
     prefix:   /
-
 
 # Internal routing configuration to handle ESI
 #_internal:

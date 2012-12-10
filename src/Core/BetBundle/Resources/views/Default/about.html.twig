@@ -1,0 +1,41 @@
+{% extends '::base.html.twig' %}
+{% block title %}{{ parent() }} - About{% endblock %}
+{% block body %}
+
+<div class="container">
+  <div class="page-header">
+    <h1>About this app</h1>
+  </div>
+  <div class="row-fluid">
+    <div class="span8">
+      <p class="lead">
+      The idea for this app came up while I was sipping (some) vodka with my friends,
+      with whom I happen to occasionally bet on Premier League games. Nothing serious.
+      Just for the fun of it. 
+      </p>
+      <p>
+      One of my friends used to gather our bets and was responsible for updating scores
+      in publicly held spreadsheet. But all of that mundane muscle work had to be done 
+      manually after every game week. Not fun.
+      </p>
+      <p>
+      That's when my significantly intoxicated brain came up with an idea for this thing.
+      "Let's create simple CRUD app that does all that stuff for us! I can also make it
+      scrap scores from some web site and update them on the fly!". We agreed that this
+      in fact was a great idea and the decision was made that I should be rewarded with
+      5 bottles of fine polish vodka if I ever accomplished this noble quest.
+      </p>
+      <p>True story.</p>
+      <p>Check out the <a href="{{ path('demo') }}">demo</a>. Feedback will be appreciated.</p>
+      <p>By the way it'll make my getting to know Symfony2 more fun.</p>
+      <h2>Features</h2>
+      <ol>
+        <li>Authenticating players</li>
+        <li>Letting players submit their bets week by week</li>
+        <li>Calculating scores and updating scoreboard</li>
+      </ol>
+    </div> 
+  </div> 
+</div> 
+
+{% endblock %}
