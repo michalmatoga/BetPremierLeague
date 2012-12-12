@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
+use Core\BetBundle\Entity\Players;
+
 class DefaultController extends Controller
 {
     /**
@@ -14,6 +16,9 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
+      $player = new Player();
+      $player->setNick('sierotkamarysia');
+      $player->setPassword('test');
 
       return array();
     }
