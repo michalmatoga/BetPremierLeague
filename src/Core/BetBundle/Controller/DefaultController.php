@@ -16,10 +16,6 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-      $player = new Player();
-      $player->setNick('sierotkamarysia');
-      $player->setPassword('test');
-
       return array();
     }
 

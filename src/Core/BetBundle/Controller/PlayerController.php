@@ -2,6 +2,7 @@
 
 namespace Core\BetBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -11,17 +12,25 @@ use Core\BetBundle\Entity\Players;
 class PlayerController extends Controller
 {
   /**
-   * @Route("/players/create/{nick}/{password}", name="player_create")
+   * @Route("/players/register", name="player_register")
    * @Template()
    */
-  public function createAction($nick, $password)
+  public function registerAction(Request $request)
   {
-    $player = new Players();
-    $player->setNick($nick);
-    $player->setPassword(hash('sha256', $nick));
-    $em = $this->getDoctrine()->getManager();
-    $em->persist($player);
-    $em->flush();
-    return array('nick' => $nick, 'playerId' => $player->getId());
+    $form = $this->createFormBuilder(new Players())
+      ->add('nick', 'text')->add('password', 'password')->getForm();
+    if ($request->isMethod('POST')) {
+      $form->bind($request);
+      if ($form->isValid()) {
+        $player = $form->getData();
+        $player->setPassword(hash('sha256', $player->getPassword()));
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($player);
+        $em->flush();
+        $this->get('session')->setFlash('success', 'That\'s it! Registration complete!');
+        return $this->redirect($this->generateUrl('player_register'));
+      }
+    }
+    return array('form' => $form->createView());
   }
 }
