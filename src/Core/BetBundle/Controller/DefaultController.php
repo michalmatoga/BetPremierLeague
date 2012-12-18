@@ -28,9 +28,20 @@ class DefaultController extends Controller
       $session->remove(SecurityContext::AUTHENTICATION_ERROR);
     }
 
+
+    $cache = $this->get('cache');
+    $cache->setNamespace('core.cache'); 
+    if ($standings = $cache->fetch('plstandings')) {
+        $standings = unserialize($standings);
+    } else {
+        $scrapper = new \Core\BetBundle\WebScrapper();
+        $standings = $scrapper->getPremierLeagueStandings();
+        $cache->save('plstandings', serialize($standings), 3600);//TTL 1H
+    }
     return array(
       'last_username' => $session->get(SecurityContext::LAST_USERNAME),
-      'error'         => $error,
+      'standings' => $standings,
+      'error'         => $error
     );
   }
 

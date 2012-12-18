@@ -56,7 +56,7 @@
                   {% else %}
                   <form class="navbar-form pull-right" action="" method="post">
                     <input class="span2" type="text" name="_username"
-                    value="{{last_username}}"placeholder="Nick">
+                    value="{{last_username|default('')}}"placeholder="Nick">
                     <input class="span2" type="password" name="_password" placeholder="Password">
                     <button type="submit" class="btn">Sign in</button>
                   </form>
