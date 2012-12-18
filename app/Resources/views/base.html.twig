@@ -51,8 +51,8 @@
                     <li {% if app.request.get('_route') == 'about' %} 
                     class="active"{% endif %}><a href="{{ path('about') }}">About</a></li>
                   </ul>
-                  {% if is_granted('ROLE_USER')  %}
-                  <div class="user pull-right"><span class="username">Hello {{app.user.username}}!</span></div>
+                  {% if is_granted('ROLE_PLAYER')  %}
+                  <div class="user pull-right"><span class="username">Hello {{app.user.username}}! | <a href="{{ path('logout') }}">Logout</a></span></div>
                   {% else %}
                   <form class="navbar-form pull-right" action="" method="post">
                     <input class="span2" type="text" name="_username"

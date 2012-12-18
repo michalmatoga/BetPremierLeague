@@ -3,6 +3,7 @@
 namespace Core\BetBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Core\BetBundle\Entity\Players
@@ -10,11 +11,10 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="players")
  * @ORM\Entity
  */
-class Players
+class Players implements UserInterface, \Serializable
 {
     /**
      * @var integer $id
-     *
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
@@ -36,7 +36,58 @@ class Players
      */
     private $password;
 
+    /**
+     * @var string $salt
+     *
+     * @ORM\Column(name="salt", type="string", length=32, nullable=false)
+     */
+    private $salt;
 
+    public function __construct()
+    {
+        $this->salt = md5(uniqid(null, true));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getRoles()
+    {
+        return array('ROLE_PLAYER');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUsername()
+    {
+        return $this->getNick();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function eraseCredentials()
+    {
+    }
+
+    /**
+     * @see \Serializable::serialize()
+     */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+        ));
+    }
+
+    /**
+     * @see \Serializable::unserialize()
+     */
+    public function unserialize($serialized)
+    {
+        list ($this->id) = unserialize($serialized);
+    }
 
     /**
      * Get id
@@ -92,5 +143,28 @@ class Players
     public function getPassword()
     {
         return $this->password;
+    }
+
+    /**
+     * Set salt
+     *
+     * @param string $salt
+     * @return Players
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+    
+        return $this;
+    }
+
+    /**
+     * Get salt
+     *
+     * @return string 
+     */
+    public function getSalt()
+    {
+        return $this->salt;
     }
 }

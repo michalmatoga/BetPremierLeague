@@ -33,4 +33,12 @@ class PlayerController extends Controller
     }
     return array('form' => $form->createView());
   }
+
+  /**
+   * @Route("/players/logout", name="logout")
+   * @Template()
+   */
+  public function logoutAction(){
+    return array(); 
+  }
 }
