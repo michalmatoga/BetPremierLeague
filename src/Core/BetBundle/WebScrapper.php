@@ -5,6 +5,39 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class WebScrapper
 {
+  public function getPremierLeagueFixtures(){
+    $fixtures = array();
+    $crawler = new Crawler(file_get_contents('http://www.premierleague.com/en-gb/matchday/matches.html'));
+    $tables = $crawler->filter('table.contentTable');
+    foreach ($tables as $table){
+      $node = new Crawler($table);
+      $th = $node->filter('th');
+      $date = null;
+      foreach($th as $header){
+        $date = date('Y-m-d',strtotime($header->textContent));
+      }
+      $rows = $node->filter('tr');
+      foreach($rows as $row){
+        $childrenCount = $row->childNodes->length;
+        $match = array();
+        foreach($row->childNodes as $td){
+          if ($childrenCount != 1){
+            if ($td instanceof \DOMElement && $td->getAttribute('class') == 'time'){
+              $match['date'] = $date.' '.trim($td->textContent).':00'; 
+            }
+            if ($td instanceof \DOMElement && $td->getAttribute('class') == 'clubs'){
+              list($match['team_1'], $match['team_2'])
+                = explode(' v ', trim($td->textContent));
+            }
+          }
+        }
+        if (!empty($match)){
+          $fixtures[] = $match;
+        }
+      }
+    }
+    return $fixtures;
+  }
 
   public function getPremierLeagueStandings(){
     $crawler = new Crawler(file_get_contents('http://www.fifa.com/associations/association=eng/nationalleague/standings.html'));
