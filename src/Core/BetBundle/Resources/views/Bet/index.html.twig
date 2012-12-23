@@ -4,31 +4,30 @@
 {% block body %}
 
 <div class="container">
+<h2>Upcoming games<small class="past-games"><a href="{{ path('bet_history') }}">See games history</a></small></h2>
+{% for date,matches in fixtures %}
   <div class="row">
-    <h2>Past game week</h2>
     <div class="game-week span5">
-      <h3>Tuesday, January 1st, 2013</h3>
+      <h3>{{date}}</h3>
       <form action="" method="post">
         <table class="table table-hover table-condensed bet-table">
           <tr>
+            <th>Time</th>
             <th>Home</th>
             <th>Bet</th>
             <th>Away</th>
           </tr>
-          <tr class="success"><td>Chelsea</td><td><input disabled value="1" type="text" class="bet span1" /></td><td>Queens Park Rangers</td></tr>
-          <tr class="success"><td>Liverpool</td><td><input disabled value="X" type="text" class="bet span1" /></td><td>Sunderland</td></tr>
-          <tr class="error"><td>Manchester City</td><td><input disabled value="X" type="text" class="bet span1" /></td><td>Stoke City</td></tr>
-          <tr class="success"><td>Newcastle United</td><td><input disabled value="1" type="text" class="bet span1" /></td><td>Everton</td></tr>
-          <tr class="error"><td>Southampton</td><td><input disabled value="2" type="text" class="bet span1" /></td><td>Arsenal</td></tr>
-          <tr class="error"><td>Swansea City</td><td><input disabled value="1" type="text" class="bet span1" /></td><td>Aston Villa</td></tr>
-          <tr class="success"><td>Tottenham Hotspur</td><td><input disabled value="2" type="text" class="bet span1" /></td><td>Reading</td></tr>
-          <tr class="success"><td>West Bromwich Albion</td><td><input disabled value="1" type="text" class="bet span1" /></td><td>Fulham</td></tr>
-          <tr class="success"><td>West Ham United</td><td><input disabled value="2" type="text" class="bet span1" /></td><td>Norwich City</td></tr>
-          <tr class="success"><td>Wigan Athletic</td><td><input disabled value="1" type="text" class="bet span1" /></td><td>Manchester United</td></tr>
+          {% for match in matches %}
+          <tr>
+          <td>{{match.getDate().format('H:i')}}</td>
+          <td>{{match.getTeam1()}}</td><td><input name="match_{{match.getId()}}"
+          type="text" class="bet span1" /></td><td>{{match.getTeam2()}}</td></tr>
+          {% endfor %}
+          <tr><td></td><td></td><td><button class="btn btn-primary" type="submit">Submit</button></td><td></td></tr>
         </table>
       </form>
     </div> 
   </div> 
-</div>
-
+{% endfor %}
+</div> 
 {% endblock %}

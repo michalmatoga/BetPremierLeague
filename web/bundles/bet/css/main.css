@@ -4,14 +4,20 @@ input.bet{
 }
 .bet-table td, .bet-table th {
     text-align: center;
+    width: 150px;
 }
 
 .user {
-    padding-top: 10px;
     margin-right: 70px;
+}
+div.user{
+    padding-top: 10px;
 }
 
 h2 .update {
     font-size: 10px;
 }
 
+.past-games {
+  margin-left: 2em;
+}

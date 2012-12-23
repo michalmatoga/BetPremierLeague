@@ -55,7 +55,7 @@
                   {% if is_granted('ROLE_PLAYER')  %}
                   <div class="user pull-right"><span class="username">Hello, <strong>{{app.user.username}}</strong>! | <a href="{{ path('logout') }}">Logout</a></span></div>
                   {% else %}
-                  <form class="navbar-form pull-right" action="" method="post">
+                  <form class="user navbar-form pull-right" action="" method="post">
                     <input class="span2" type="text" name="_username"
                     value="{{last_username|default('')}}"placeholder="Nick">
                     <input class="span2" type="password" name="_password" placeholder="Password">

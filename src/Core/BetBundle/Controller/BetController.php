@@ -13,11 +13,48 @@ class BetController extends Controller
   /**
    * @Route("/bet", name="bet")
    * @Template()
+   * @todo put business logic in more suitable place
    */
   public function indexAction()
   {
-    return array();
+    $em = $this->getDoctrine()->getEntityManager();
+    $query = $em->createQuery(
+      'SELECT m FROM CoreBetBundle:Matches m WHERE m.date > CURRENT_TIMESTAMP() ORDER BY m.date ASC'
+    );
+    $matches = $query->getResult();
+    $fixtures = array();
+    foreach($matches as $match){
+    $currentDate = $match->getDate()->format('Y-m-d');
+      if (!array_key_exists($currentDate, $fixtures)){
+        $fixtures[$currentDate] = array();
+      }
+      $fixtures[$currentDate][] = $match;
+    }
+    return array('fixtures' => $fixtures);
   }
+
+  /**
+   * @Route("/bet/history", name="bet_history")
+   * @Template()
+   */
+  public function historyAction()
+  {
+    $em = $this->getDoctrine()->getEntityManager();
+    $query = $em->createQuery(
+      'SELECT m FROM CoreBetBundle:Matches m WHERE m.date <= CURRENT_TIMESTAMP() ORDER BY m.date DESC'
+    );
+    $matches = $query->getResult();
+    $fixtures = array();
+    foreach($matches as $match){
+    $currentDate = $match->getDate()->format('Y-m-d');
+      if (!array_key_exists($currentDate, $fixtures)){
+        $fixtures[$currentDate] = array();
+      }
+      $fixtures[$currentDate][] = $match;
+    }
+    return array('fixtures' => $fixtures);
+  }
+
 
   /**
    * Lazy method for persisting scrapped fixtures into database

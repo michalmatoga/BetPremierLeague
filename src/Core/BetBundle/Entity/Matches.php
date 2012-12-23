@@ -56,7 +56,18 @@ class Matches
      */
     private $date;
 
+    public function getUpcomingMatches(){
+    $em = $this->getDoctrine()->getEntityManager();
+$query = $em->createQuery(
+    'SELECT p FROM AcmeStoreBundle:Product p WHERE p.price > :price ORDER BY p.price ASC'
+)->setParameter('price', '19.99');
 
+$products = $query->getResult();
+    }
+
+    public function getPastMatches(){
+    
+    }
 
     /**
      * Get id
