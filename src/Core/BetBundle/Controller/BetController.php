@@ -30,7 +30,16 @@ class BetController extends Controller
       }
       $fixtures[$currentDate][] = $match;
     }
-    return array('fixtures' => $fixtures);
+    $cache = $this->get('cache');
+    $cache->setNamespace('core.cache'); 
+    if ($odds = $cache->fetch('currentodds')) {
+        $odds = unserialize($odds);
+    } else {
+        $scrapper = new \Core\BetBundle\WebScrapper();
+        $odds = $scrapper->getPremierLeagueOdds();
+        $cache->save('currentodds', serialize($odds), 86400);//TTL 24H
+    }
+    return array('fixtures' => $fixtures, 'odds' => $odds);
   }
 
   /**

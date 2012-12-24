@@ -20,8 +20,24 @@
           {% for match in matches %}
           <tr>
           <td>{{match.getDate().format('H:i')}}</td>
-          <td>{{match.getTeam1()}}</td><td><input name="match_{{match.getId()}}"
-          type="text" class="bet span1" /></td><td>{{match.getTeam2()}}</td></tr>
+          <td>{{match.getTeam1()}}</td><td>
+          {% if odds[match.getTeam1()~'X'~match.getTeam2()] is defined %}
+          <table class="odds-tooltip">
+          <tr>
+            <th>1</th>
+            <th>X</th>
+            <th>2</th>
+          </tr>
+          <tr>
+            <td>{{odds[match.getTeam1()~'X'~match.getTeam2()][0]}}</td>
+            <td>{{odds[match.getTeam1()~'X'~match.getTeam2()][1]}}</td>
+            <td>{{odds[match.getTeam1()~'X'~match.getTeam2()][2]}}</td>
+          </tr>
+          </table>
+          {% endif %}
+          <input maxlength="1" name="match_{{match.getId()}}"
+          type="text" class="bet span1" />
+          </td><td>{{match.getTeam2()}}</td></tr>
           {% endfor %}
           <tr><td></td><td></td><td><button class="btn btn-primary" type="submit">Submit</button></td><td></td></tr>
         </table>

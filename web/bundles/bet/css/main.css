@@ -21,3 +21,7 @@ h2 .update {
 .past-games {
   margin-left: 2em;
 }
+
+.odds-tooltip {
+    display: none;
+}
