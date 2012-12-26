@@ -4,7 +4,20 @@
 {% block body %}
 
 <div class="container">
+{% if app.session.hasFlash('success') %}
+<div class="alert alert-success">
+{{ app.session.flash('success') }}
+</div>
+{% endif %}
+{% if errors is not empty %}
+<div class="alert alert-error">
+{% for error in errors %}
+    {{error}}
+{% endfor %}
+</div>
+{% endif %}
 <h2>Upcoming games<small class="past-games"><a href="{{ path('bet_history') }}">See games history</a></small></h2>
+<h3>You can change your mind until the kick-off!</h3>
 {% for date,matches in fixtures %}
   <div class="row">
     <div class="game-week span5">
@@ -36,7 +49,7 @@
           </table>
           {% endif %}
           <input maxlength="1" name="match_{{match.getId()}}"
-          type="text" class="bet span1" />
+          type="text" class="bet span1" value="{% if match.getId() in bets|keys %}{{bets[match.getId()]}}{% endif %}" />
           </td><td>{{match.getTeam2()}}</td></tr>
           {% endfor %}
           <tr><td></td><td></td><td><button class="btn btn-primary" type="submit">Submit</button></td><td></td></tr>

@@ -2,11 +2,13 @@
 
 namespace Core\BetBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 use Core\BetBundle\Entity\Matches;
+use Core\BetBundle\Entity\Bets;
 
 class BetController extends Controller
 {
@@ -15,7 +17,7 @@ class BetController extends Controller
    * @Template()
    * @todo put business logic in more suitable place
    */
-  public function indexAction()
+  public function indexAction(Request $request)
   {
     $em = $this->getDoctrine()->getEntityManager();
     $query = $em->createQuery(
@@ -23,8 +25,10 @@ class BetController extends Controller
     );
     $matches = $query->getResult();
     $fixtures = array();
+    $matchIds = array();
     foreach($matches as $match){
-    $currentDate = $match->getDate()->format('Y-m-d');
+      $matchIds[] = $match->getId();
+      $currentDate = $match->getDate()->format('Y-m-d');
       if (!array_key_exists($currentDate, $fixtures)){
         $fixtures[$currentDate] = array();
       }
@@ -33,13 +37,67 @@ class BetController extends Controller
     $cache = $this->get('cache');
     $cache->setNamespace('core.cache'); 
     if ($odds = $cache->fetch('currentodds')) {
-        $odds = unserialize($odds);
+      $odds = unserialize($odds);
     } else {
-        $scrapper = new \Core\BetBundle\WebScrapper();
-        $odds = $scrapper->getPremierLeagueOdds();
-        $cache->save('currentodds', serialize($odds), 86400);//TTL 24H
+      $scrapper = new \Core\BetBundle\WebScrapper();
+      $odds = $scrapper->getPremierLeagueOdds();
+      $cache->save('currentodds', serialize($odds), 86400);//TTL 24H
     }
-    return array('fixtures' => $fixtures, 'odds' => $odds);
+    $player = $this->get('security.context')->getToken()->getUser();
+    /*
+     * Get current player bets
+     */
+    $query = $em->createQuery(
+      'SELECT b FROM CoreBetBundle:Bets b WHERE b.match IN ('.implode(',', $matchIds).')'
+    );
+    $bets = $query->getResult();
+    $playerBets = array();
+    foreach($bets as $bet){
+        $playerBets[$bet->getMatch()->getId()] = $bet->getBet(); 
+    }
+
+    /*
+     * Handle bets
+     */
+    $errors = array();
+    if ($request->isMethod('POST')) {
+      $bets = $request->request->all();
+      /*
+       * Lazy validation
+       */
+      foreach($bets as $bet){
+        if (!in_array(strtolower($bet), array('1','2', 'x'))){
+          $errors = array('Some of the bets you submitted were invalid'); 
+          break;
+        }
+      }
+      if (empty($errors)){
+        $em = $this->getDoctrine()->getEntityManager();
+        foreach($bets as $matchId => $bet){
+          $newBet = new Bets(); 
+          $newBet->setPlayer($player);
+          $newBet->setBet(strtolower($bet));
+          $id = explode('_', $matchId);
+          $match = $this->getDoctrine()->getRepository('CoreBetBundle:Matches')->find($id[1]);
+          $newBet->setMatch($match);
+          $newBet->setDate(new \DateTime());
+          $em->persist($newBet);
+
+          /* remove previous bet if any */
+          $query = $em->createQuery(
+            'SELECT b FROM CoreBetBundle:Bets b WHERE b.match = '.$id[1]
+          );
+          $oldBet = $query->getResult();
+          if (!empty($oldBet)){
+            $em->remove($oldBet[0]);
+          }
+        }
+        $em->flush();
+        $this->get('session')->setFlash('success', 'Your bets have been submitted');
+        return $this->redirect($this->generateUrl('bet'));
+      }
+    }
+    return array('fixtures' => $fixtures, 'odds' => $odds, 'bets' => $playerBets, 'errors' => $errors);
   }
 
   /**
@@ -57,10 +115,10 @@ class BetController extends Controller
     $fixtures = array();
     foreach($matches as $match){
       $currentDate = $match->getDate()->format('Y-m-d');
-        if (!array_key_exists($currentDate, $fixtures)){
-          $fixtures[$currentDate] = array();
-        }
-        $fixtures[$currentDate][] = $match;
+      if (!array_key_exists($currentDate, $fixtures)){
+        $fixtures[$currentDate] = array();
+      }
+      $fixtures[$currentDate][] = $match;
     }
     return array('fixtures' => $fixtures);
   }
