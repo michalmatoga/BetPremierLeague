@@ -23,7 +23,12 @@ class PlayerController extends Controller
       $form->bind($request);
       if ($form->isValid()) {
         $player = $form->getData();
-        $player->setPassword(hash('sha256', $player->getPassword()));
+
+        $factory = $this->get('security.encoder_factory');
+        $encoder = $factory->getEncoder($player);
+        $password = $encoder->encodePassword($player->getPassword(), $player->getSalt());
+        $player->setPassword($password);
+
         $em = $this->getDoctrine()->getManager();
         $em->persist($player);
         $em->flush();

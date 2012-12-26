@@ -48,7 +48,7 @@ class BetController extends Controller
      * Get current player bets
      */
     $query = $em->createQuery(
-      'SELECT b FROM CoreBetBundle:Bets b WHERE b.match IN ('.implode(',', $matchIds).')'
+      'SELECT b FROM CoreBetBundle:Bets b WHERE b.match IN ('.implode(',', $matchIds).') AND b.player = '.$player->getId()
     );
     $bets = $query->getResult();
     $playerBets = array();
@@ -85,7 +85,7 @@ class BetController extends Controller
 
           /* remove previous bet if any */
           $query = $em->createQuery(
-            'SELECT b FROM CoreBetBundle:Bets b WHERE b.match = '.$id[1]
+            'SELECT b FROM CoreBetBundle:Bets b WHERE b.match = '.$id[1].' AND b.player = '.$player->getId()
           );
           $oldBet = $query->getResult();
           if (!empty($oldBet)){
