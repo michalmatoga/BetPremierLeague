@@ -5,7 +5,7 @@ namespace Core\BetBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Core\BetBundle\Entity\Bets
+ * Bets
  *
  * @ORM\Table(name="bets")
  * @ORM\Entity
@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Bets
 {
     /**
-     * @var integer $id
+     * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
@@ -22,21 +22,21 @@ class Bets
     private $id;
 
     /**
-     * @var string $bet
+     * @var string
      *
      * @ORM\Column(name="bet", type="string", length=1, nullable=false)
      */
     private $bet;
 
     /**
-     * @var \DateTime $date
+     * @var \DateTime
      *
      * @ORM\Column(name="date", type="datetime", nullable=false)
      */
     private $date;
 
     /**
-     * @var Matches
+     * @var \Matches
      *
      * @ORM\ManyToOne(targetEntity="Matches")
      * @ORM\JoinColumns({
@@ -46,7 +46,7 @@ class Bets
     private $match;
 
     /**
-     * @var Players
+     * @var \Players
      *
      * @ORM\ManyToOne(targetEntity="Players")
      * @ORM\JoinColumns({
@@ -116,7 +116,7 @@ class Bets
     /**
      * Set match
      *
-     * @param Core\BetBundle\Entity\Matches $match
+     * @param \Core\BetBundle\Entity\Matches $match
      * @return Bets
      */
     public function setMatch(\Core\BetBundle\Entity\Matches $match = null)
@@ -129,7 +129,7 @@ class Bets
     /**
      * Get match
      *
-     * @return Core\BetBundle\Entity\Matches 
+     * @return \Core\BetBundle\Entity\Matches 
      */
     public function getMatch()
     {
@@ -139,7 +139,7 @@ class Bets
     /**
      * Set player
      *
-     * @param Core\BetBundle\Entity\Players $player
+     * @param \Core\BetBundle\Entity\Players $player
      * @return Bets
      */
     public function setPlayer(\Core\BetBundle\Entity\Players $player = null)
@@ -152,7 +152,7 @@ class Bets
     /**
      * Get player
      *
-     * @return Core\BetBundle\Entity\Players 
+     * @return \Core\BetBundle\Entity\Players 
      */
     public function getPlayer()
     {

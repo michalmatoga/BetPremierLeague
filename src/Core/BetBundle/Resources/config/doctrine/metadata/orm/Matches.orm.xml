@@ -5,8 +5,8 @@
       <generator strategy="IDENTITY"/>
     </id>
     <field name="team1" type="string" column="team_1" length="255" nullable="false"/>
-    <field name="score1" type="boolean" column="score_1" nullable="false"/>
-    <field name="score2" type="boolean" column="score_2" nullable="false"/>
+    <field name="score1" type="integer" column="score_1" nullable="false"/>
+    <field name="score2" type="integer" column="score_2" nullable="false"/>
     <field name="team2" type="string" column="team_2" length="255" nullable="false"/>
     <field name="date" type="datetime" column="date" nullable="false"/>
   </entity>

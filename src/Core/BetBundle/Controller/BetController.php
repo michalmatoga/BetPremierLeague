@@ -48,6 +48,7 @@ class BetController extends Controller
    */
   public function historyAction()
   {
+    $this->_updateScores();
     $em = $this->getDoctrine()->getEntityManager();
     $query = $em->createQuery(
       'SELECT m FROM CoreBetBundle:Matches m WHERE m.date <= CURRENT_TIMESTAMP() ORDER BY m.date DESC'
@@ -55,11 +56,11 @@ class BetController extends Controller
     $matches = $query->getResult();
     $fixtures = array();
     foreach($matches as $match){
-    $currentDate = $match->getDate()->format('Y-m-d');
-      if (!array_key_exists($currentDate, $fixtures)){
-        $fixtures[$currentDate] = array();
-      }
-      $fixtures[$currentDate][] = $match;
+      $currentDate = $match->getDate()->format('Y-m-d');
+        if (!array_key_exists($currentDate, $fixtures)){
+          $fixtures[$currentDate] = array();
+        }
+        $fixtures[$currentDate][] = $match;
     }
     return array('fixtures' => $fixtures);
   }
@@ -82,5 +83,21 @@ class BetController extends Controller
     }
     $em->flush();
     exit;
+  }
+
+  private function _updateScores(){
+    $em = $this->getDoctrine()->getEntityManager();
+    $query = $em->createQuery(
+      'SELECT m FROM CoreBetBundle:Matches m WHERE m.score1 IS NULL AND m.date <= CURRENT_TIMESTAMP()'
+    );
+    $scrapper = new \Core\BetBundle\WebScrapper();
+    $emptyResults = $query->getResult();
+    $filledResults = $scrapper->getPremierLeagueResults($emptyResults);
+    if (!empty($filledResults)){
+      foreach($filledResults as $result){
+        $em->persist($result);
+      }
+      $em->flush();
+    }
   }
 }

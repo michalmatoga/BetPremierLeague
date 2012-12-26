@@ -1,0 +1,33 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{parent()}} - Games history{% endblock %}
+{% block body %}
+
+<div class="container">
+<h2>Games history<small class="past-games"><a href="{{ path('bet') }}">See upcoming games</a></small></h2>
+{% for date,matches in fixtures %}
+  <div class="row">
+    <div class="game-week span5">
+      <h3>{{date}}</h3>
+      <form action="" method="post">
+        <table class="table table-hover table-condensed bet-table">
+          <tr>
+            <th>Time</th>
+            <th>Home</th>
+            <th>Result</th>
+            <th>Away</th>
+          </tr>
+          {% for match in matches %}
+          <tr>
+          <td>{{match.getDate().format('H:i')}}</td>
+          <td>{{match.getTeam1()}}</td><td>
+          {{match.getScore1()}}:{{match.getScore2()}}
+          </td><td>{{match.getTeam2()}}</td></tr>
+          {% endfor %}
+        </table>
+      </form>
+    </div> 
+  </div> 
+{% endfor %}
+</div> 
+{% endblock %}

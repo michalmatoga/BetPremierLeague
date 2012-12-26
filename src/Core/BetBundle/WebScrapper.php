@@ -89,6 +89,29 @@ class WebScrapper
     return $matches;
   }
 
+  public function getPremierLeagueResults($emptyMatches){
+    if (!empty($emptyMatches)){
+      $crawler = new Crawler(file_get_contents('http://www.livefootball.com/football/england/premier-league/results/7-days/'));
+      $results = $crawler->filter('dd.mElO1');
+      $matchesScores = array();
+      $label = '';
+      foreach($results as $result){
+        $label .= $this->_normalizeClubName($result->textContent).'X'.
+          $this->_normalizeClubName($result->nextSibling->nextSibling->textContent);
+        $matchesScores[$label] = explode(' - ', $result->nextSibling->lastChild->textContent); 
+        $label = '';
+      } 
+      if (!empty($matchesScores)){
+        foreach($emptyMatches as &$emptyMatch){
+          $result = $matchesScores[$emptyMatch->getTeam1().'X'.$emptyMatch->getTeam2()];
+          $emptyMatch->setScore1($result[0]);
+          $emptyMatch->setScore2($result[1]);
+        }
+      }
+    }
+    return $emptyMatches;
+  }
+
   /**
    * Making up for diffrences in club names between premiership.com and bwin.com
    * @param string $original
@@ -102,6 +125,7 @@ class WebScrapper
     case 'Liverpool FC': return 'Liverpool'; break;
     case 'Manchester City': return 'Man City'; break;
     case 'Manchester Utd': return 'Man Utd'; break;
+    case 'Manchester United': return 'Man Utd'; break;
     case 'Newcastle United': return 'Newcastle'; break;
     case 'Norwich City': return 'Norwich'; break;
     case 'Queens Park Rangers': return 'QPR'; break;
@@ -110,6 +134,7 @@ class WebScrapper
     case 'Swansea City': return 'Swansea'; break;
     case 'Tottenham Hotspur': return 'Tottenham'; break;
     case 'West Bromwich': return 'West Brom'; break;
+    case 'West Bromwich Albion': return 'West Brom'; break;
     case 'West Ham United': return 'West Ham'; break;
     case 'Wigan Athletic': return 'Wigan'; break;
     default: return $original;

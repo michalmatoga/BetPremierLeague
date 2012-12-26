@@ -5,7 +5,7 @@ namespace Core\BetBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Core\BetBundle\Entity\Matches
+ * Matches
  *
  * @ORM\Table(name="matches")
  * @ORM\Entity
@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Matches
 {
     /**
-     * @var integer $id
+     * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
@@ -22,52 +22,41 @@ class Matches
     private $id;
 
     /**
-     * @var string $team1
+     * @var string
      *
      * @ORM\Column(name="team_1", type="string", length=255, nullable=false)
      */
     private $team1;
 
     /**
-     * @var boolean $score1
+     * @var integer
      *
-     * @ORM\Column(name="score_1", type="boolean", nullable=false)
+     * @ORM\Column(name="score_1", type="integer", nullable=true)
      */
     private $score1;
 
     /**
-     * @var boolean $score2
+     * @var integer
      *
-     * @ORM\Column(name="score_2", type="boolean", nullable=false)
+     * @ORM\Column(name="score_2", type="integer", nullable=true)
      */
     private $score2;
 
     /**
-     * @var string $team2
+     * @var string
      *
      * @ORM\Column(name="team_2", type="string", length=255, nullable=false)
      */
     private $team2;
 
     /**
-     * @var \DateTime $date
+     * @var \DateTime
      *
      * @ORM\Column(name="date", type="datetime", nullable=false)
      */
     private $date;
 
-    public function getUpcomingMatches(){
-    $em = $this->getDoctrine()->getEntityManager();
-$query = $em->createQuery(
-    'SELECT p FROM AcmeStoreBundle:Product p WHERE p.price > :price ORDER BY p.price ASC'
-)->setParameter('price', '19.99');
 
-$products = $query->getResult();
-    }
-
-    public function getPastMatches(){
-    
-    }
 
     /**
      * Get id
